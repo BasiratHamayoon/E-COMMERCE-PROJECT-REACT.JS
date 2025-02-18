@@ -22,10 +22,10 @@ const HomeCategories = () => {
     animate={isInView ? { opacity: 1, y: 0 } : {}}
     transition={{ duration: 1, ease: "easeOut" }}
     className="relative text-black text-[26px] font-sans my-[30px] text-center"
->
+    >
     Explore Our Top Categories
-    <span className="block mx-auto mt-2 w-1/2 h-[3px] bg-black rounded-full"></span>
-</motion.h2>
+    <span className="block mx-auto mt-2 w-1/2 h-[6px] bg-[#841414] rounded-full"></span>
+    </motion.h2>
 
             <div className='grid lg:grid-cols-3 gap-6 lg:w-[70%] w-[80%]'>
                 {catItems.map((item, index) => (
