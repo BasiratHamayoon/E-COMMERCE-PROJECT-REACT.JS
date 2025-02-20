@@ -5,14 +5,19 @@ import loader from "../assets/Products-Fetching-Loader/loader.gif";
 import { motion } from 'framer-motion'; // Importing Framer Motion
 import { PiShoppingCartLight } from "react-icons/pi";
 import { CiHeart } from "react-icons/ci";
+import { FaHeart } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import { addToCart } from '../Slices/CartSlice';
+import { toggleFavorite } from '../Slices/favoriteSlice';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Products = () => {
   const dispatchProducts = useDispatch();
   const { products, isLoading, message } = useSelector((state) => state.products);
+  const favoriteProducts = useSelector((state) => state.favorite.favoriteProducts);
+
+ 
 
 
   useEffect(() => {
@@ -37,6 +42,15 @@ const Products = () => {
     toast.success(`Product added to cart!`, {
       position: "bottom-right",
       autoClose: 2000,});
+  }
+
+  //Favorite Handling
+
+  const handleFavoriteProduct = (product) => {
+    dispatchProducts(toggleFavorite(product))
+  }
+  const isFavorite = (isExistId) => {
+    return favoriteProducts.some((item) => item.id === isExistId);
   }
 
   return (
@@ -85,8 +99,9 @@ const Products = () => {
                   <motion.div
                     className="cursor-pointer bg-white rounded-full px-[5px] py-[5px] mt-[-130px] ml-[60px]"
                     whileHover={{ scale: 1.2 }}
+                    onClick={() => handleFavoriteProduct(item)}
                   >
-                    <CiHeart size={24} /> {/* Heart Icon from React Icons */}
+                    {isFavorite(item.id) ? <FaHeart size={24} className='text-red-500' /> : <CiHeart size={24} />} {/* Heart Icon from React Icons */}
                   </motion.div>
                 </div>
               </div>
