@@ -3,7 +3,8 @@ import { fetchProducts } from '../Slices/ProductSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import loader from "../assets/Products-Fetching-Loader/loader.gif";
 import { motion } from 'framer-motion'; // Importing Framer Motion
-import { FaCartPlus, FaHeart } from 'react-icons/fa'; // Importing React Icons
+import { PiShoppingCartLight } from "react-icons/pi";
+import { CiHeart } from "react-icons/ci";
 import { Link } from 'react-router-dom';
 import { addToCart } from '../Slices/CartSlice';
 import { toast } from "react-toastify";
@@ -16,7 +17,7 @@ const Products = () => {
 
   useEffect(() => {
     dispatchProducts(fetchProducts());
-  }, [dispatchProducts]);
+  }, []);
 
   if (isLoading) {
     return (
@@ -25,7 +26,6 @@ const Products = () => {
       </div>
     );
   }
-
   if (message) {
     return <p>Error: {message}</p>;
   }
@@ -77,16 +77,16 @@ const Products = () => {
                 {/* Icons inside the overlay */}
                 <div className="absolute inset-0 flex justify-center items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <motion.div
-                    className="text-white cursor-pointer"
+                    className=" cursor-pointer bg-white rounded-full px-[5px] py-[5px] mt-[130px] ml-[-0px]"
                     whileHover={{ scale: 1.2 }}
                   >
-                    <FaCartPlus size={20} onClick={() => handleCart(item)} /> {/* Cart Icon from React Icons */}
+                    <PiShoppingCartLight size={24} onClick={() => handleCart(item)} /> {/* Cart Icon from React Icons */}
                   </motion.div>
                   <motion.div
-                    className="text-white cursor-pointer"
+                    className="cursor-pointer bg-white rounded-full px-[5px] py-[5px] mt-[-130px] ml-[60px]"
                     whileHover={{ scale: 1.2 }}
                   >
-                    <FaHeart size={20} /> {/* Heart Icon from React Icons */}
+                    <CiHeart size={24} /> {/* Heart Icon from React Icons */}
                   </motion.div>
                 </div>
               </div>

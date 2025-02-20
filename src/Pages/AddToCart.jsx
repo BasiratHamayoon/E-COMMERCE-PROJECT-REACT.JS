@@ -14,6 +14,10 @@ const AddToCart = () => {
     return <p className='text-center mt-[200px] text-[20px] text-gray-600'>Cart Is Empty!</p>;
   }
 
+  //Total Price Calculation 
+  const subtotal = cartProducts.reduce((total, product) => total + product.price, 0);
+
+
   return (
     <div className="w-full py-5 flex-flex-col">
      <h1 className="text-[28px] font-bold font-sans text-center py-[20px]">Your Cart</h1>
@@ -55,8 +59,8 @@ const AddToCart = () => {
       </table>
       <div className='lg:w-[20%] lg:h-[200px] lg:mt-[150px] py-[20px] w-full flex flex-col justify-center items-center'>
         <div className='flex justify-between items-center gap-10 border-b'>
-          <h1 className='text-[23px] font-bold'>SubTotal</h1>
-          <h1 className='text-[23px] font-bold'>Price</h1>
+          <h1 className='text-[18px] font-bold'>SubTotal</h1>
+          <h1 className='text-[18px]'>Price: ${subtotal.toFixed(2)}</h1>
         </div>
         <button className='bg-[#841414] py-[7px] px-[20px] text-white m-auto my-[30px] lg:w-full
         rounded-md cursor-pointer hover:bg-black transition-all'>Checkout</button>

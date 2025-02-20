@@ -6,6 +6,9 @@ import { FaStar } from "react-icons/fa";
 import { FaHeart } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { addToCart } from '../Slices/CartSlice';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProductDetail = () => {
 
@@ -26,6 +29,15 @@ const ProductDetail = () => {
     if (message) {
       return <p>Error: {message}</p>;
     }
+
+    //Adding to cart Function
+    
+      const handleCart = (product) => {
+        dispatchProducts(addToCart(product));
+        toast.success(`Product added to cart!`, {
+          position: "bottom-right",
+          autoClose: 2000,});
+      } 
   
   return (
     <motion.div 
@@ -54,7 +66,8 @@ const ProductDetail = () => {
             <p className='text-gray-600 text-[14px]'>{product?.description}</p>
             <p className='text-[20px] font-bold text-[#841414]'>Price: ${product?.price}</p>
             <button className='bg-[#841414] text-white py-[7px] w-[60%] m-auto rounded-md
-            transition-all hover:bg-black cursor-pointer'>Add To Cart</button>
+            transition-all hover:bg-black cursor-pointer'
+            onClick={() => handleCart(product)}>Add To Cart</button>
           </div>
         </div>
     </motion.div>
