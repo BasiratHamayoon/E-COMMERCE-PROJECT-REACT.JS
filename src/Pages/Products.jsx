@@ -4,10 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import loader from "../assets/Products-Fetching-Loader/loader.gif";
 import { motion } from 'framer-motion'; // Importing Framer Motion
 import { FaCartPlus, FaHeart } from 'react-icons/fa'; // Importing React Icons
+import { Link } from 'react-router-dom';
+import { addToCart } from '../Slices/CartSlice';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Products = () => {
   const dispatchProducts = useDispatch();
   const { products, isLoading, message } = useSelector((state) => state.products);
+
 
   useEffect(() => {
     dispatchProducts(fetchProducts());
@@ -23,6 +28,15 @@ const Products = () => {
 
   if (message) {
     return <p>Error: {message}</p>;
+  }
+
+  //Adding to cart Function
+
+  const handleCart = (product) => {
+    dispatchProducts(addToCart(product));
+    toast.success(`Product added to cart!`, {
+      position: "bottom-right",
+      autoClose: 2000,});
   }
 
   return (
@@ -66,7 +80,7 @@ const Products = () => {
                     className="text-white cursor-pointer"
                     whileHover={{ scale: 1.2 }}
                   >
-                    <FaCartPlus size={20} /> {/* Cart Icon from React Icons */}
+                    <FaCartPlus size={20} onClick={() => handleCart(item)} /> {/* Cart Icon from React Icons */}
                   </motion.div>
                   <motion.div
                     className="text-white cursor-pointer"
@@ -77,16 +91,20 @@ const Products = () => {
                 </div>
               </div>
             </div>
+            
 
             {/* Product Info */}
+            <Link to={`/ProductDetail/${item.id}`}>
             <div className="flex flex-col justify-center items-center">
               <h1 className="text-[15px] font-sans font-semibold">{item.title}</h1>
               <h1 className="text-[14px] font-bold">Price ${item.price}</h1>
             </div>
+            </Link>
           </motion.div>
         ))}
       </motion.div>
     </div>
+    
   );
 };
 

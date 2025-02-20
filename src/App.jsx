@@ -9,6 +9,7 @@ import Favorite from './Pages/Favorite'
 import AddToCart from './Pages/AddToCart'
 import ProductDetail from './Pages/ProductDetail'
 
+
 function App() {
   const [count, setCount] = useState(0)
 
@@ -25,7 +26,7 @@ function App() {
               <Route path='/Contact' element={<Contact />} /> 
               <Route path='/Favorite' element={<Favorite />} /> 
               <Route path='/AddToCart' element={<AddToCart />} />
-              <Route path='/ProductDetail' element={<ProductDetail />} />  
+              <Route path='/ProductDetail/:id' element={<ProductDetail />} />  
            </Routes>
     </>
   )
