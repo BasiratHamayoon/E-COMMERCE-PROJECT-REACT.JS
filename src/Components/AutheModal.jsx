@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FcGoogle } from "react-icons/fc";
 import {
@@ -10,22 +10,26 @@ import {
 } from "firebase/auth";
 import { app } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AutheModal = ({ isOpen, onClose }) => {
     const auth = getAuth(app);
     const googleProvider = new GoogleAuthProvider();
     const inputRef = useRef(null);
-    const navigate = useNavigate("");
+    const navigate = useNavigate();
 
     const [isSignup, setIsSignup] = useState(false);
-    const [formData, setFormData] = useState({
-        userName: "",
-        email: "",
-        password: "",
-    });
+    const [formData, setFormData] = useState({ userName: "", email: "", password: "" });
+
+    useEffect(() => {
+        if (isOpen) {
+            setTimeout(() => inputRef.current?.focus(), 200);
+        }
+    }, [isOpen, isSignup]);
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setFormData({ ...formData, [e.target.name]: e.target.value.trim() });
     };
 
     const handleSubmit = async (e) => {
@@ -34,38 +38,30 @@ const AutheModal = ({ isOpen, onClose }) => {
 
         try {
             if (isSignup) {
-                // 🔹 Create new user (Sign Up)
                 await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-                alert("Sign-up successful ✅");
-                navigate("/")
+                toast.success("Sign-up successful ✅");
             } else {
-                // 🔹 Sign in existing user (Login)
                 await signInWithEmailAndPassword(auth, formData.email, formData.password);
-                alert("Login successful ✅");
-                navigate("/")
+                toast.success("Login successful ✅");
             }
 
-            // ✅ Clear form fields after submission
             setFormData({ userName: "", email: "", password: "" });
-
-            // Close the modal after successful submission
             onClose();
+            navigate("/");
         } catch (error) {
             console.error("Authentication Error:", error.message);
-            alert(error.message);
+            toast.error(error.message);
         }
     };
 
-    // 🔹 Google Authentication Function
     const handleGoogleSignIn = async () => {
         try {
             const result = await signInWithPopup(auth, googleProvider);
-            console.log("Google Sign-In Successful ✅", result.user);
-            alert(`Welcome, ${result.user.displayName}!`);
+            toast.success(`Welcome, ${result.user.displayName}!`);
             onClose();
         } catch (error) {
             console.error("Google Sign-In Error:", error.message);
-            alert(error.message);
+            toast.error(error.message);
         }
     };
 
@@ -144,8 +140,8 @@ const AutheModal = ({ isOpen, onClose }) => {
 
                         <button
                             type="button"
-                            className="flex justify-center items-center gap-2 w-[70%] m-auto border border-gray-300 py-2 rounded-md cursor-pointer"
-                            onClick={handleGoogleSignIn} // 🔹 Trigger Google Sign-In
+                            className="flex justify-center items-center gap-2 w-[70%] m-auto border border-gray-300 py-2 rounded-md cursor-pointer transition hover:bg-gray-100"
+                            onClick={handleGoogleSignIn}
                         >
                             <FcGoogle size={20} />
                             <span>{isSignup ? "Sign Up" : "Login"} With Google</span>
@@ -153,7 +149,7 @@ const AutheModal = ({ isOpen, onClose }) => {
 
                         <button
                             type="submit"
-                            className="w-[70%] m-auto py-2 bg-[#841414] text-white rounded-md hover:bg-black cursor-pointer"
+                            className="w-[70%] m-auto py-2 bg-red-600 text-white rounded-md transition-all hover:bg-black cursor-pointer shadow-md"
                         >
                             {isSignup ? "Sign Up" : "Login"}
                         </button>
@@ -162,7 +158,7 @@ const AutheModal = ({ isOpen, onClose }) => {
                     <p className="text-gray-500 text-sm">
                         {isSignup ? "Already have an account?" : "Don't have an account?"}
                         <span
-                            className="text-[#841414] cursor-pointer ml-1 font-semibold"
+                            className="text-red-600 cursor-pointer ml-1 font-semibold transition hover:text-black"
                             onClick={() => setIsSignup(!isSignup)}
                         >
                             {isSignup ? "Login" : "Sign Up"}

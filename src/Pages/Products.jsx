@@ -1,27 +1,24 @@
-import React, { useEffect } from 'react';
-import { fetchProducts } from '../Slices/ProductSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect } from "react";
+import { fetchProducts } from "../Slices/ProductSlice";
+import { useDispatch, useSelector } from "react-redux";
 import loader from "../assets/Products-Fetching-Loader/loader.gif";
-import { motion } from 'framer-motion'; // Importing Framer Motion
+import { motion } from "framer-motion";
 import { PiShoppingCartLight } from "react-icons/pi";
 import { CiHeart } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
-import { Link } from 'react-router-dom';
-import { addToCart } from '../Slices/CartSlice';
-import { toggleFavorite } from '../Slices/favoriteSlice';
+import { Link } from "react-router-dom";
+import { addToCart } from "../Slices/CartSlice";
+import { toggleFavorite } from "../Slices/favoriteSlice";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Products = () => {
-  const dispatchProducts = useDispatch();
+  const dispatch = useDispatch();
   const { products, isLoading, message } = useSelector((state) => state.products);
   const favoriteProducts = useSelector((state) => state.favorite.favoriteProducts);
 
- 
-
-
   useEffect(() => {
-    dispatchProducts(fetchProducts());
+    dispatch(fetchProducts());
   }, []);
 
   if (isLoading) {
@@ -35,91 +32,84 @@ const Products = () => {
     return <p>Error: {message}</p>;
   }
 
-  //Adding to cart Function
-
+  // Adding to cart function
   const handleCart = (product) => {
-    dispatchProducts(addToCart(product));
+    dispatch(addToCart(product));
     toast.success(`Product added to cart!`, {
       position: "bottom-right",
-      autoClose: 2000,});
-  }
+      autoClose: 2000,
+    });
+  };
 
-  //Favorite Handling
-
+  // Favorite handling
   const handleFavoriteProduct = (product) => {
-    dispatchProducts(toggleFavorite(product))
-  }
-  const isFavorite = (isExistId) => {
-    return favoriteProducts.some((item) => item.id === isExistId);
-  }
+    dispatch(toggleFavorite(product));
+  };
+
+  const isFavorite = (productId) => {
+    return favoriteProducts.some((item) => item.id === productId);
+  };
 
   return (
     <div className="flex flex-col py-[50px] justify-center items-center">
       <h1 className="text-[28px] font-bold font-sans text-center py-[2px]">All Products</h1>
-      <span className="lg:w-[8%] w-[20%] bg-[#841414] h-[6px] rounded-md m-auto"></span>
+      <span className="lg:w-[8%] w-[20%] bg-red-600 h-[6px] rounded-md m-auto"></span>
 
-      {/* Framer Motion to animate the grid on page load */}
+      {/* Product Grid with Framer Motion */}
       <motion.div
         className="grid lg:grid-cols-4 md:grid-cols-2 py-[70px] gap-20 lg:w-[70%] md:w-[80%] w-[90%] m-auto"
-        initial={{ opacity: 0 }} // Start invisible
-        animate={{ opacity: 1 }} // Fade in
-        transition={{ duration: 0.8 }} // Smooth transition for grid fade-in
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
       >
         {products.map((item, index) => (
           <motion.div
             key={item.id}
             className="flex flex-col justify-center items-center gap-4 relative"
-            whileHover={{ scale: 1.05 }} // Scale effect on hover
+            whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.3 }}
-            initial={{ opacity: 0, y: 50 }} // Start with opacity 0 and position 50px below
-            animate={{ opacity: 1, y: 0 }} // Fade in and move to original position
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{
-              delay: index * 0.1, // Add delay for each item (0.1s between each)
-              duration: 0.5, // Duration of the animation
+              delay: index * 0.1,
+              duration: 0.5,
             }}
           >
-            {/* Product Card with Overlay */}
-            <div className="flex justify-center items-center bg-gray-200 relative group">
-              <img
-                src={item.image}
-                alt={item.title}
-                className="w-[230px] h-[200px] object-cover"
-              />
+            {/* Product Card */}
+            <div className="relative group bg-gray-200 rounded-lg overflow-hidden">
+              <img src={item.image} alt={item.title} className="w-[230px] h-[200px] object-cover rounded-lg" />
 
               {/* Hover Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black to-black/60 to-transparent opacity-0 group-hover:opacity-80 transition-opacity duration-300 group-hover:cursor-pointer z-10">
-                {/* Icons inside the overlay */}
-                <div className="absolute inset-0 flex justify-center items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <motion.div
-                    className=" cursor-pointer bg-white rounded-full px-[5px] py-[5px] mt-[130px] ml-[-0px]"
-                    whileHover={{ scale: 1.2 }}
-                  >
-                    <PiShoppingCartLight size={24} onClick={() => handleCart(item)} /> {/* Cart Icon from React Icons */}
-                  </motion.div>
-                  <motion.div
-                    className="cursor-pointer bg-white rounded-full px-[5px] py-[5px] mt-[-130px] ml-[60px]"
-                    whileHover={{ scale: 1.2 }}
-                    onClick={() => handleFavoriteProduct(item)}
-                  >
-                    {isFavorite(item.id) ? <FaHeart size={24} className='text-red-500' /> : <CiHeart size={24} />} {/* Heart Icon from React Icons */}
-                  </motion.div>
-                </div>
+              <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+                {/* Cart Button */}
+                <motion.button
+                  className="bg-red-600 text-white p-2 rounded-full shadow-lg hover:opacity-80 transition"
+                  whileHover={{ scale: 1.1 }}
+                  onClick={() => handleCart(item)}
+                >
+                  <PiShoppingCartLight size={22} />
+                </motion.button>
+
+                {/* Favorite Button */}
+                <motion.button
+                  className="bg-red-600 text-white p-2 rounded-full shadow-lg hover:opacity-80 transition"
+                  whileHover={{ scale: 1.1 }}
+                  onClick={() => handleFavoriteProduct(item)}
+                >
+                  {isFavorite(item.id) ? <FaHeart size={22} /> : <CiHeart size={22} />}
+                </motion.button>
               </div>
             </div>
-            
 
             {/* Product Info */}
-            <Link to={`/ProductDetail/${item.id}`}>
-            <div className="flex flex-col justify-center items-center">
+            <Link to={`/ProductDetail/${item.id}`} className="text-center">
               <h1 className="text-[15px] font-sans font-semibold">{item.title}</h1>
               <h1 className="text-[14px] font-bold">Price ${item.price}</h1>
-            </div>
             </Link>
           </motion.div>
         ))}
       </motion.div>
     </div>
-    
   );
 };
 

@@ -3,12 +3,18 @@ import { CiHeart, CiUser, CiLogout } from "react-icons/ci";
 import { Link, useNavigate } from 'react-router-dom';
 import { PiShoppingCartLight } from "react-icons/pi";
 import { RxHamburgerMenu, RxCross2 } from "react-icons/rx";
+import { addToCart } from '../Slices/CartSlice';
+import { toggleFavorite } from '../Slices/favoriteSlice';
 import { motion, AnimatePresence } from "framer-motion";
 import AutheModal from './AutheModal';
 import { MdArrowDropUp } from "react-icons/md";
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
+    const { cartProducts } = useSelector((state) => state.cart);
+    const { favoriteProducts } = useSelector((state) => state.favorite);
+
     const [showRoutes, setShowRoutes] = useState(false);
     const [showAuthModal, setShowAuthModal] = useState(false);
     const [showLogout, setShowLogout] = useState(false);
@@ -39,7 +45,7 @@ const Navbar = () => {
     };
 
     // Protected Navigation Handler
-    const handleProtectedNavigation = (route) => {
+    const handleProtectedNavigation = () => {
         if (isAuthenticated) {
             navigate("/");
         } else {
@@ -55,18 +61,18 @@ const Navbar = () => {
     ];
 
     return (
-        <div className='flex justify-center items-center px-[50px] relative'>
+        <div className='flex justify-center items-center px-[50px] relative bg-white z-10'>
             <nav className='flex justify-center items-center lg:gap-46 md:gap-46 gap-15 py-2'>
 
                 {/* Logo */}
                 <div>
-                    <h1 className='text-[#841414] font-bold text-[25px] font-sarif'>QuickKart</h1>
+                    <h1 className='text-red-600 font-bold text-[25px] font-sarif'>QuickKart</h1>
                 </div>
 
                 {/* Public Routes */}
                 <ul className='lg:flex justify-center items-center gap-10 hidden'>
                     {publicRoutes.map((item) => (
-                        <li key={item.id} className='relative pb-1 after:rounded-full after:content-[""] after:absolute after:left-0 after:bottom-0 after:h-[4px] after:bg-[#841414] after:transition-all after:duration-300 hover:after:w-full hover:text-[#841414]'>
+                        <li key={item.id} className='relative pb-1 after:rounded-full after:content-[""] after:absolute after:left-0 after:bottom-0 after:h-[4px] after:bg-red-600 after:transition-all after:duration-300 hover:after:w-full hover:text-red-600'>
                             <Link to={item.url}>{item.title}</Link>
                         </li>
                     ))}
@@ -76,13 +82,13 @@ const Navbar = () => {
                 <ul className='flex justify-center items-center gap-2'>
                     {/* Favorite */}
                     <li onClick={() => handleProtectedNavigation("/Favorite")} className="cursor-pointer">
-                        <span className='bg-red-800 px-[5px] text-[12px] text-white rounded-full absolute ml-[14px] mt-[-5px] text-center'>0</span>
+                        <span className='bg-red-600 px-[5px] text-[12px] text-white rounded-full absolute ml-[14px] mt-[-5px] text-center'>{favoriteProducts.length}</span>
                         <CiHeart size={25} />
                     </li>
 
                     {/* Add To Cart */}
                     <li onClick={() => handleProtectedNavigation("/AddToCart")} className="cursor-pointer">
-                        <span className='bg-red-800 px-[5px] text-[12px] text-white rounded-full absolute ml-[14px] mt-[-5px] text-center'>0</span>
+                        <span className='bg-red-600 px-[5px] text-[12px] text-white rounded-full absolute ml-[14px] mt-[-5px] text-center'>{cartProducts.length}</span>
                         <PiShoppingCartLight size={25} />
                     </li>
 
