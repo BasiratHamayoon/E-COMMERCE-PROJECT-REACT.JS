@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CiHeart, CiUser, CiLogout } from "react-icons/ci";
 import { Link, useNavigate } from 'react-router-dom';
 import { PiShoppingCartLight } from "react-icons/pi";
@@ -6,24 +6,44 @@ import { RxHamburgerMenu, RxCross2 } from "react-icons/rx";
 import { motion, AnimatePresence } from "framer-motion";
 import AutheModal from './AutheModal';
 import { MdArrowDropUp } from "react-icons/md";
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 
 const Navbar = () => {
     const [showRoutes, setShowRoutes] = useState(false);
     const [showAuthModal, setShowAuthModal] = useState(false);
     const [showLogout, setShowLogout] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     const navigate = useNavigate();
-    const auth = getAuth();  // Initialize Firebase Auth
+    const auth = getAuth();
+
+    // Check if user is authenticated
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            setIsAuthenticated(!!user);
+        });
+
+        return () => unsubscribe();
+    }, []);
 
     // Handle Logout
     const handleLogout = async () => {
         try {
-            await signOut(auth);  // Sign out the user
-            navigate('/');  // Redirect to Home page
-            alert("Logout Successful!")
+            await signOut(auth);
+            navigate('/');
+            setShowLogout(false);
+            alert("Logout Successful!");
         } catch (error) {
             console.error("Logout Error:", error.message);
+        }
+    };
+
+    // Protected Navigation Handler
+    const handleProtectedNavigation = (route) => {
+        if (isAuthenticated) {
+            navigate("/");
+        } else {
+            setShowAuthModal(true);
         }
     };
 
@@ -36,7 +56,7 @@ const Navbar = () => {
 
     return (
         <div className='flex justify-center items-center px-[50px] relative'>
-            <nav className='flex justify-center items-center lg:gap-46 md:gap-46 gap-30 py-2'>
+            <nav className='flex justify-center items-center lg:gap-46 md:gap-46 gap-15 py-2'>
 
                 {/* Logo */}
                 <div>
@@ -53,29 +73,30 @@ const Navbar = () => {
                 </ul>
 
                 {/* Protected Routes */}
-                <ul className='flex justify-center items-center gap-3'>
-                    <li>
-                        <Link to={"/Favorite"}>
-                            <span className='bg-red-800 px-[5px] text-[12px] text-white rounded-full absolute ml-[14px] mt-[-5px] text-center'>0</span>
-                            <CiHeart size={25} />
-                        </Link>
+                <ul className='flex justify-center items-center gap-2'>
+                    {/* Favorite */}
+                    <li onClick={() => handleProtectedNavigation("/Favorite")} className="cursor-pointer">
+                        <span className='bg-red-800 px-[5px] text-[12px] text-white rounded-full absolute ml-[14px] mt-[-5px] text-center'>0</span>
+                        <CiHeart size={25} />
                     </li>
-                    <li>
-                        <Link to={"/AddToCart"}>
-                            <span className='bg-red-800 px-[5px] text-[12px] text-white rounded-full absolute ml-[14px] mt-[-5px] text-center'>0</span>
-                            <PiShoppingCartLight size={25} />
-                        </Link>
+
+                    {/* Add To Cart */}
+                    <li onClick={() => handleProtectedNavigation("/AddToCart")} className="cursor-pointer">
+                        <span className='bg-red-800 px-[5px] text-[12px] text-white rounded-full absolute ml-[14px] mt-[-5px] text-center'>0</span>
+                        <PiShoppingCartLight size={25} />
                     </li>
 
                     {/* User Icon & Logout Button */}
-                    <li className='relative flex items-center cursor-pointer'>
-                        {/* User Icon (Opens Auth Modal) */}
+                    <li className='relative flex items-center cursor-pointer lg:border lg:px-[0px] lg:rounded-full ml-[2px] '>
+                        {/* User Icon */}
                         <CiUser size={25} onClick={() => setShowAuthModal(true)} />
 
                         {/* Logout Toggle Arrow */}
-                        <span onClick={() => setShowLogout((prev) => !prev)}>
-                            <MdArrowDropUp size={20} className={`transition-transform duration-300 ${showLogout ? 'rotate-180' : ''}`} />
-                        </span>
+                        {isAuthenticated && (
+                            <span onClick={() => setShowLogout((prev) => !prev)}>
+                                <MdArrowDropUp size={20} className={`transition-transform duration-300 ${showLogout ? 'rotate-180' : ''}`} />
+                            </span>
+                        )}
 
                         {/* Logout Button with Animation */}
                         <AnimatePresence>
@@ -85,8 +106,8 @@ const Navbar = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
                                     transition={{ duration: 0.3 }}
-                                    className="absolute top-10 right-0 bg-white shadow-md px-4 py-2 rounded-md text-black flex items-center gap-2 z-10"
-                                    onClick={handleLogout}  // Logout Function
+                                    className="absolute top-10 right-0 bg-white shadow-md px-4 py-2 rounded-md text-black flex items-center gap-2 z-10 cursor-pointer"
+                                    onClick={handleLogout}
                                 >
                                     <CiLogout />
                                     <span>Logout</span>
