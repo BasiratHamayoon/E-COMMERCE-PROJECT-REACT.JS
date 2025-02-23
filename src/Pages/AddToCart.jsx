@@ -19,7 +19,7 @@ const AddToCart = () => {
         initial={{ opacity: 0, y: 20 }} 
         animate={{ opacity: 1, y: 0 }} 
         transition={{ duration: 0.5 }}
-        className='text-center mt-[200px] text-[20px] text-gray-600'
+        className='text-center text-[20px] text-gray-600 py-[100px]'
       >
         Cart Is Empty!
         <span className='m-auto flex justify-center items-center'><img src={cartIcon}  className='w-[28px] h-[28px]'/></span>

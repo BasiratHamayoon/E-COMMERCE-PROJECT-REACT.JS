@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useLocation } from 'react'
 import Navbar from './Components/Navbar'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './Pages/Home'
@@ -8,10 +8,10 @@ import Contact from './Pages/Contact'
 import Favorite from './Pages/Favorite'
 import AddToCart from './Pages/AddToCart'
 import ProductDetail from './Pages/ProductDetail'
+import Footer from './Components/HomeComponents/Footer'
 
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
@@ -28,6 +28,8 @@ function App() {
               <Route path='/AddToCart' element={<AddToCart />} />
               <Route path='/ProductDetail/:id' element={<ProductDetail />} />  
            </Routes>
+          {/* Footer */}
+          <Footer />
     </>
   )
 }

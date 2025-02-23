@@ -36,8 +36,8 @@ const Favorite = () => {
   };
 
   if (favoriteProducts.length === 0) {
-    return <div>
-      <p className='text-center mt-[200px] text-[20px] text-gray-600'>No Favorite Product Found!</p>
+    return <div className='py-[100px]'>
+      <p className='text-center text-[20px] text-gray-600'>No Favorite Product Found!</p>
       <span className='m-auto flex justify-center items-center'><img src={favIcon}  className='w-[28px] h-[28px]'/></span>
       </div>;
   }

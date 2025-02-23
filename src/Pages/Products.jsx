@@ -23,7 +23,7 @@ const Products = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center mt-[200px]">
+      <div className="flex justify-center items-center py-[100px]">
         <img src={loader} alt="Loading..." />
       </div>
     );

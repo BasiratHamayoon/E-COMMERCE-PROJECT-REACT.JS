@@ -3,8 +3,6 @@ import { CiHeart, CiUser, CiLogout } from "react-icons/ci";
 import { Link, useNavigate } from 'react-router-dom';
 import { PiShoppingCartLight } from "react-icons/pi";
 import { RxHamburgerMenu, RxCross2 } from "react-icons/rx";
-import { addToCart } from '../Slices/CartSlice';
-import { toggleFavorite } from '../Slices/favoriteSlice';
 import { motion, AnimatePresence } from "framer-motion";
 import AutheModal from './AutheModal';
 import { MdArrowDropUp } from "react-icons/md";
@@ -45,9 +43,9 @@ const Navbar = () => {
     };
 
     // Protected Navigation Handler
-    const handleProtectedNavigation = () => {
+    const handleProtectedNavigation = (path) => {
         if (isAuthenticated) {
-            navigate("/");
+            navigate(path);
         } else {
             setShowAuthModal(true);
         }
@@ -81,14 +79,18 @@ const Navbar = () => {
                 {/* Protected Routes */}
                 <ul className='flex justify-center items-center gap-2'>
                     {/* Favorite */}
-                    <li onClick={() => handleProtectedNavigation("/Favorite")} className="cursor-pointer">
-                        <span className='bg-red-600 px-[5px] text-[12px] text-white rounded-full absolute ml-[14px] mt-[-5px] text-center'>{favoriteProducts.length}</span>
+                    <li onClick={() => handleProtectedNavigation("/Favorite")} className="cursor-pointer relative">
+                        <span className='bg-red-600 px-[5px] text-[12px] text-white rounded-full absolute ml-[14px] mt-[-5px] text-center'>
+                            {favoriteProducts.length}
+                        </span>
                         <CiHeart size={25} />
                     </li>
 
                     {/* Add To Cart */}
-                    <li onClick={() => handleProtectedNavigation("/AddToCart")} className="cursor-pointer">
-                        <span className='bg-red-600 px-[5px] text-[12px] text-white rounded-full absolute ml-[14px] mt-[-5px] text-center'>{cartProducts.length}</span>
+                    <li onClick={() => handleProtectedNavigation("/AddToCart")} className="cursor-pointer relative">
+                        <span className='bg-red-600 px-[5px] text-[12px] text-white rounded-full absolute ml-[14px] mt-[-5px] text-center'>
+                            {cartProducts.length}
+                        </span>
                         <PiShoppingCartLight size={25} />
                     </li>
 
